@@ -5,6 +5,7 @@ ENV RUNNING_IN_DOCKER=true
 ENV PYTHONUNBUFFERED=1
 ENV NODE_PATH=/usr/lib/node_modules
 ENV SCRIPTS=/opt/dataproducten
+ENV SHELL=/bin/bash
 
 # Install required packages
 RUN apk add --no-cache \
@@ -17,6 +18,8 @@ RUN apk add --no-cache \
     uv=0.10.2-r0 \
     just==1.43.1-r0 \
     github-cli=2.83.0-r3
+
+SHELL ["/bin/bash", "-c"]
 
 # Install Python project dependencies
 RUN uv pip install --system \
@@ -42,14 +45,13 @@ RUN npm i -g \
 RUN wget https://github.com/mikefarah/yq/releases/download/v4.52.2/yq_linux_amd64 -O /usr/local/bin/yq \
     && chmod +x /usr/local/bin/yq
 
-# Install shell completions for just
-RUN mkdir -p /usr/share/bash-completion/completions
-RUN just --completions bash >> /usr/share/bash-completion/completions/just \
-    && echo 'source /usr/share/bash-completion/completions/just' >> /etc/bash.bashrc
-
 # Copy configuration files
 RUN mkdir -p $SCRIPTS
 COPY src/scripts $SCRIPTS/
+
+# Install shell completions for just
+RUN mkdir -p /usr/share/bash-completion/completions
+RUN just --completions bash >> /usr/share/bash-completion/completions/just
 
 # Initialize non-root user
 ENV USER=developer
@@ -71,6 +73,9 @@ RUN addgroup \
     $USER
 
 USER $USER
+
+# Initialize just completions
+RUN touch ~/.bashrc && echo 'source /usr/share/bash-completion/completions/just' >> ~/.bashrc
 
 # Metadata
 LABEL org.opencontainers.image.source=https://github.com/netbeheer-nederland/dataproducten

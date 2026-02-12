@@ -15,10 +15,10 @@ build: (_clean "output")
 generate-documentation: (_clean "output")
     @echo "Generating site using Antora…"
     @if [ ${CI} == "true"  ]; then \
-        jinja -D site_url https://modellen.netbeheernederland.nl/{{name}} -D site_title {{site_title}} /opt/data-products/antora/antora-playbook.yml.jinja > /tmp/antora-playbook.yml; \
+        jinja -D site_url 'https://modellen.netbeheernederland.nl/'{{name}} -D site_title {{site_title}} /opt/data-products/antora/antora-playbook.yml.jinja > /tmp/antora-playbook.yml; \
         antora --fetch /tmp/antora-playbook.yml; \
     else \
-        jinja -D site_url http://localhost:8080 -D site_title {{site_title}} /opt/data-products/antora/antora-playbook.local.yml.jinja > /tmp/antora-playbook.local.yml; \
+        jinja -D site_url 'http://localhost:8080' -D site_title {{site_title}} /opt/data-products/antora/antora-playbook.local.yml.jinja > /tmp/antora-playbook.local.yml; \
         antora --fetch /tmp/antora-playbook.local.yml; \
     fi
     @echo
