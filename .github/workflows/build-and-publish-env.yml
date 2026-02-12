@@ -22,8 +22,8 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ghcr.io/netbeheer-nederland:${{ github.ref_name }} .
+          docker build -t ghcr.io/netbeheer-nederland/dataproducten:${{ github.ref_name }} .
 
       - name: Push Docker image to GHCR
         run: |
-          docker push ghcr.io/netbeheer-nederland:${{ github.ref_name }}
+          docker push ghcr.io/netbeheer-nederland/dataproducten:${{ github.ref_name }}
