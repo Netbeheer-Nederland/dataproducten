@@ -6,7 +6,7 @@ module.exports.register = function () {
   this.once('contentAggregated', ({ contentAggregate, playbook }) => {
     for (const { origins } of contentAggregate) {
       for (const origin of origins) {
-        const outDir = path.resolve("./output/docs/adoc")
+        const outDir = path.resolve("./output")
 
         let collector = {
           run: {
@@ -16,7 +16,7 @@ module.exports.register = function () {
           },
           scan: {
             clean: true,
-            dir: outDir,
+            dir: path.join(outDir, "docs/adoc")
           }
 
         }

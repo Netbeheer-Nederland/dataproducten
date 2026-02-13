@@ -10,7 +10,7 @@ _default:
 build: (_clean "output")
     yq src/model/*.linkml.yml
 
-# Generate documentation (assumes generated artifacts)
+# Generate documentation (assumes generated artifacts [does it still?)
 [group("generators")]
 generate-documentation: (_clean "output")
     @echo "Generating site using Antora…"

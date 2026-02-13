@@ -1,32 +1,67 @@
 #!/bin/bash
 
+
+### Variables.
+
 export name=$(yq .name ./src/model/*.linkml.yml | tr '-' '_')
 export title=$(yq .title ./src/model/*.linkml.yml)
 export version=$(yq .version ./src/model/*.linkml.yml)
 
-function generate_documentation() {
-    echo "Generating documentation…"
+
+### Functions.
+
+function _clean() {
+    echo "Cleaning up…"
     echo
-    mkdir -p $OUTDIR
-    cp -r src/docs/* $OUTDIR
-    yq -i '.version = env(version)' $OUTDIR/antora.yml
-    yq -i '.title = env(title)' $OUTDIR/antora.yml
+    if [ -d output ]; then
+        rm -rf output
+    fi
+    echo "… OK."
+    echo
+}
+
+function _generate-json-schema {
+    echo "Generating JSON Schema…"
+    mkdir -p $OUTDIR/schemas/json-schema
+    echo
+    gen-json-schema \
+        --not-closed \
+        src/model/$name.linkml.yml \
+        > output/schemas/json-schema/$name.json_schema.json
+    echo "… OK."
+    echo
+    echo "Generated JSON Schema at: output/schemas/json-schema/$name.json_schema.json"
+    echo
+}
+
+function build() {
+    echo "Generating documentation…"
+    _clean
+    echo
+    mkdir -p $OUTDIR/docs/adoc
+    cp -r src/docs/* $OUTDIR/docs/adoc
+    yq -i '.version = env(version)' $OUTDIR/docs/adoc/antora.yml
+    yq -i '.title = env(title)' $OUTDIR/docs/adoc/antora.yml
     echo
     echo "Generating schema documentation…"
     echo
-    mkdir -p "$OUTDIR/modules/schema"
+    mkdir -p "$OUTDIR/docs/adoc/modules/schema"
     python -m linkml_asciidoc_generator.main \
-        -o $OUTDIR/modules/schema \
+        -o $OUTDIR/docs/adoc/modules/schema \
         -t /opt/dataproducten/templates \
         --render-diagrams \
         src/model/$name.linkml.yml
     echo "Adding schema documentation to nav…"
-    yq -i '.nav += ["modules/schema/nav.adoc"]' $OUTDIR/antora.yml
+    yq -i '.nav += ["modules/schema/nav.adoc"]' $OUTDIR/docs/adoc/antora.yml
     echo
-    echo -e "Copying generated artifacts to schema documentation…"
-    for model in src/model/*; do \
-        cp -r $model $OUTDIR/modules/schema/attachments/; \
-        echo -e "To reference use:\n\txref:schema:attachment$"${model#src/model/}"[]"; \
+    echo -e "Generating artifacts…"
+    for schema in $(yq '.annotations.additional_schemas // {} | keys // [] | .[]' src/model/*.linkml.yml); do \
+        if [ $schema == "json-schema" ]; then
+            _generate-json-schema
+            cp $OUTDIR/schemas/json-schema/$name.json_schema.json $OUTDIR/docs/adoc/modules/schema/attachments/
+        fi
+        cp -r $OUTDIR/schemas/json-schema/$name.json_schema.json $OUTDIR/docs/adoc/modules/schema/attachments/; \
+        echo -e "To reference use:\n\txref:schema:attachment\$$schema[]"; \
     done
     echo -e "Copy examples (JSON) to schema documentation…"
     for example in src/examples/*.yml; do \
@@ -34,10 +69,13 @@ function generate_documentation() {
         gen-linkml-profile  \
             convert \
             "$example" \
-            --out "$OUTDIR/modules/schema/attachments/${example_name%.*}.json"; \
+            --out "$OUTDIR/docs/adoc/modules/schema/attachments/${example_name%.*}.json"; \
         echo -e "To reference use:\n\txref:schema:attachment\$${example_name%.*}.json[]"; \
     done
     echo
 }
 
-generate_documentation
+
+### Main
+
+build
