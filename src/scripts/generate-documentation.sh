@@ -55,7 +55,7 @@ function build() {
     yq -i '.nav += ["modules/schema/nav.adoc"]' $OUTDIR/docs/adoc/antora.yml
     echo
     echo -e "Generating artifacts…"
-    for schema in $(yq '.annotations.additional_schemas // {} | keys // [] | .[]' src/model/*.linkml.yml); do \
+    for schema in $(yq .annotations.additional_schemas src/model/*.linkml.yml); do \
         if [ $schema == "json-schema" ]; then
             _generate-json-schema
             cp $OUTDIR/schemas/json-schema/$name.json_schema.json $OUTDIR/docs/adoc/modules/schema/attachments/
