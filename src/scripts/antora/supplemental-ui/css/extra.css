@@ -12,11 +12,11 @@ body, .doc {
 }
 
 @media (pointer: fine) {
-    @supports (scrollbar-width:thin) {
-        body * {
-            scrollbar-color: #d9e7ef transparent;
-        }
+  @supports (scrollbar-width:thin) {
+    body * {
+      scrollbar-color: #d9e7ef transparent;
     }
+  }
 }
 
 /* Content area */
@@ -27,7 +27,7 @@ body, .doc {
 .doc h4,
 .doc h5,
 .doc h6 {
-    color: #002d41;
+  color: #002d41;
 }
 
 .doc code {
@@ -43,44 +43,44 @@ img {
 
 /* Navbar */
 nav.navbar {
-   background-color: #f3f7f9;
+  background-color: #f3f7f9;
 }
 
 nav.navbar .navbar-item {
-    color: #002d41;
+  color: #002d41;
 }
 
 .navbar-end .navbar-item.has-dropdown:hover .navbar-link,
 .navbar-end .navbar-link:hover,
 .navbar-end>a.navbar-item:hover {
-    background: inherit;
-    color: #002d41;
-    text-decoration: underline;
+   background: inherit;
+   color: #002d41;
+   text-decoration: underline;
 }
 
 /* Hide "search in project" filter */
 #search-field > label.filter {
-    display: none;
+  display: none;
 }
 
 /* Nav menu */
 aside.nav {
-   background-color: #f3f7f9;
+  background-color: #f3f7f9;
 }
 
 /* Toolbar */
 main > .toolbar {
-   background-color: #f3f7f9;
+  background-color: #f3f7f9;
 }
 
 /* Nav explorer */
 aside.nav .nav-panel-explore {
-   background-color: #f3f7f9;
+  background-color: #f3f7f9;
 }
 
 /* Footer */
 footer.footer {
-    background-color: #e6eff4;
+  background-color: #f3f7f9;
 }
 
 @media screen and (min-width: 1024px) {
