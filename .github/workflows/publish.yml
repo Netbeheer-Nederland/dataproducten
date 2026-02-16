@@ -1,6 +1,5 @@
 name: Publish to GitHub Pages
 on:
-  workflow_dispatch:
   workflow_call:
 defaults:
   run:
@@ -9,12 +8,9 @@ concurrency:
   group: github-pages
   cancel-in-progress: false
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
-env:
-  JUST_JUSTFILE: /opt/data-products/justfile
-  IN_DEVCONTAINER: false
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -25,12 +21,12 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Configure Pages
         uses: actions/configure-pages@v3
       - name: Git preparations
         run: |
-          git config --global safe.directory '*'
+          # git config --global safe.directory '*'
           git fetch --tags
       - name: Generate site
         run: just build
