@@ -21,17 +21,12 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Debug
-        run: |
-          ls -l /__w/_temp/
-          ls -l .
       - name: Checkout repository
         uses: actions/checkout@v6
       - name: Configure Pages
         uses: actions/configure-pages@v3
       - name: Git preparations
         run: |
-          # git config --global safe.directory '*'
           git fetch --tags
       - name: Generate site
         run: just build
