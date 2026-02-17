@@ -87,7 +87,7 @@ _post-process-schema:
     mkdir -p output/schemas
     cp src/model/{{name}}.linkml.yml output/schemas/{{name}}.linkml.yml
     yq -i '.version = "{{version}}"' output/schemas/{{name}}.linkml.yml
-    yq -i '.id = "https://modellen.netbeheernederland.nl/{{name}}/{{version}}' output/schemas/{{name}}.linkml.yml
+    yq -i '.id = https://modellen.netbeheernederland.nl/{{name}}/{{version}}' output/schemas/{{name}}.linkml.yml
 
     # Write LinkML version to schema in output.
     # Write env version as metadata to schema.
