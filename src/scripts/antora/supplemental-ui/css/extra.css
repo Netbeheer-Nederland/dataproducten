@@ -19,6 +19,12 @@ body, .doc {
   }
 }
 
+/* Header */
+#site-logo {
+  height: 43px;
+  width: 92.5px;
+}
+
 /* Content area */
 
 .doc h1,
@@ -50,17 +56,24 @@ nav.navbar .navbar-item {
   color: #002d41;
 }
 
-.navbar-end .navbar-item.has-dropdown:hover .navbar-link,
-.navbar-end .navbar-link:hover,
+.navbar-end>a.navbar-item {
+  background: inherit;
+  color: #002d41;
+  font-size: 0.75rem;
+}
+
 .navbar-end>a.navbar-item:hover {
-   background: inherit;
-   color: #002d41;
-   text-decoration: underline;
+  color: #002d41;
+  background-color: #e9f1f5;
 }
 
 /* Hide "search in project" filter */
 #search-field > label.filter {
   display: none;
+}
+
+#search-input {
+  font-size: 0.75rem;
 }
 
 /* Nav menu */
@@ -105,9 +118,3 @@ aside.nav .nav-panel-explore {
   }
   */
 }
-
-/* Miscellaneous */
-
-/* a.site-button {
-    color: #005f87;
-} */
