@@ -1,7 +1,7 @@
 set shell := ["bash", "-uc"]
 name := shell("yq .name src/model/*.linkml.yml | tr '-' '_'")
 title := shell("yq .title ./src/model/*.linkml.yml")
-version := shell("yq .version ./src/model/*.linkml.yml")
+version := shell("git rev-parse --abbrev-ref HEAD")
 site_title := shell("yq .title src/model/*.linkml.yml")
 
 _default:
@@ -39,7 +39,7 @@ _generate_asciidoc:
         -o output/docs/adoc/modules/schema \
         -t /opt/dataproducten/templates \
         --render-diagrams \
-        src/model/{{name}}.linkml.yml
+        output/schemas/{{name}}.linkml.yml
     echo "Adding schema documentation to nav…"
     yq -i '.nav += ["modules/schema/nav.adoc"]' output/docs/adoc/antora.yml
     echo
@@ -49,14 +49,15 @@ _generate_additional_schemas:
     set -e
     echo -e "Generating artifacts…"
 
-    for schema in $(yq '.annotations.additional_schemas // ""' src/model/*.linkml.yml); do \
+    cp output/schemas/{{name}}.linkml.yml output/docs/adoc/modules/schema/attachments/
+    for schema in $(yq '.annotations.additional_schemas // ""' output/schemas/{{name}}.linkml.yml); do \
         if [ $schema == "json-schema" ]; then
             echo "Generating JSON Schema…"
             mkdir -p output/schemas/json-schema
             echo
             gen-json-schema \
                 --not-closed \
-                src/model/{{name}}.linkml.yml \
+                output/schemas/{{name}}.linkml.yml \
                 > output/schemas/json-schema/{{name}}.json_schema.json
             echo "… OK."
             echo
@@ -82,9 +83,24 @@ _generate_json_examples:
     done
     echo
 
+_post-process-schema:
+    mkdir -p output/schemas
+    cp src/model/{{name}}.linkml.yml output/schemas/{{name}}.linkml.yml
+    yq -i '.version = "{{version}}"' output/schemas/{{name}}.linkml.yml
+
+    # Write LinkML version to schema in output.
+    # Write env version as metadata to schema.
+    # Generation date.
+    # Do this prior to additional artifacts which could rely on it (especially the version).
+    # Replace all usage of src/ to output/ in Justfile
+
+    #@echo "Generating site using Antora…"
+    #@if [ $CI == "true"  ]; then \
+
+
 # Generate and assemble
 [group("development"),private]
-generate-and-assemble: _clean validate-examples _generate_asciidoc _generate_additional_schemas _generate_json_examples
+generate-and-assemble: _clean _post-process-schema validate-examples _generate_asciidoc _generate_additional_schemas _generate_json_examples
 
 # Build website locally
 [group("development")]
@@ -108,27 +124,48 @@ serve:
     @echo
     http-serve output/docs/html
 
+_determine-major-version:
+    #!/bin/env bash
+    git fetch && git fetch --tags
+
+    latest_major=$(git tag -l | grep -P '^\d+\.\d+$' | cut -d . -f 1 | sort -n | tail -1)
+    if [ -z "$latest_major" ]; then
+        new_major=1.0;
+    else
+        new_major=$(echo $latest_major + 1 | bc).0;
+    fi
+
+    echo "New major version is: $new_major"
+    echo
+    echo "Writing new major version to LinkML schema…"
+    yq -i '.version = env(version)' $OUTDIR/antora.yml
+
+    echo "OK."
+    echo
+
 
 # Release new major version
 [group("version-control")]
 release-major-version:
     @echo TODO…
 
-
 # Release new minor version
 [group("version-control")]
 release-minor-version:
     @echo TODO…
-
 
 # Submit for review to accept changes
 [group("version-control")]
 submit-for-review:
     @echo TODO…
 
-
 # Validate example data against schema
 [group("development")]
 validate-examples:
     @echo -e "Validating example data…"
-    linkml-validate -s src/model/*.linkml.yml src/examples/*
+    linkml-validate -s output/schemas/{{name}}.linkml.yml src/examples/*
+
+# Create example data
+[group("development")]
+create-example-data:
+    @echo TODO…
