@@ -30,7 +30,7 @@ SHELL ["/bin/bash", "-c"]
 RUN uv pip install --system \
     "linkml==1.9.6" \
     "linkml-asciidoc-generator @ git+https://github.com/Netbeheer-Nederland/linkml-asciidoc-generator.git@v0.6.0-alpha2" \
-    "gen-linkml-profile @ git+https://github.com/Netbeheer-Nederland/gen-linkml-profile.git@v0.22.0" \
+    "gen-linkml-profile @ git+https://github.com/Netbeheer-Nederland/gen-linkml-profile.git@v0.23.0" \
     "check-jsonschema==0.32.0" \
     "jinja-cli==1.2.2"
 
