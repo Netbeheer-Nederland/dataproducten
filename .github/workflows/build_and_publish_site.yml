@@ -1,0 +1,10 @@
+name: Build and publish site
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+jobs:
+  build:
+    uses: netbeheer-nederland/build-doc/.github/workflows/build_and_publish_site.yml@main
