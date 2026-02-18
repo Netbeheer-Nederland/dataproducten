@@ -43,6 +43,10 @@ _generate_asciidoc:
     echo "Adding schema documentation to nav…"
     yq -i '.nav += ["modules/schema/nav.adoc"]' output/docs/adoc/antora.yml
     echo
+    echo "Adding root nav…"
+    cp /opt/dataproducten/antora/root-nav.adoc output/docs/adoc/modules/ROOT/
+    yq -i '.nav = ["modules/ROOT/root-nav.adoc"] + .nav' output/docs/adoc/antora.yml
+    echo
 
 _generate_additional_schemas:
     #!/bin/bash

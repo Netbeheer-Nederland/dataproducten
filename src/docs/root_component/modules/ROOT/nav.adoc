@@ -1,11 +1,9 @@
-* Modelers
-** Data Models
-*** xref::definition.adoc[]
-*** xref::representation.adoc[]
-** xref::life-cycle.adoc[]
-** Authoring
-*** xref::modeling-guidelines.adoc[]
-* Models for Data Products
-** Capaciteitskaart
-** Capaciteitskaart LS
+* xref:dataproducten::redacteurs/index.adoc[Redacteurs]
+** xref:dataproducten::redacteurs/modelleringsrichtlijnen.adoc[Modelleringsrichtlijnen]
+* xref:dataproducten::ontwikkelaars/index.adoc[Ontwikkelaars]
+** xref::definition.adoc[Definitie]
+** xref::representation.adoc[Representatie]
+** xref::life-cycle.adoc[Lifecycle]
+* Modellen
+** https://modellen.netbeheernederland.nl/capaciteitskaart[Capaciteitskaart]
 ** Buurtnet
