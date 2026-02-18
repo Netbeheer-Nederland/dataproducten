@@ -86,8 +86,8 @@ _generate_json_examples:
 _post-process-schema:
     mkdir -p output/schemas
     cp src/model/{{name}}.linkml.yml output/schemas/{{name}}.linkml.yml
-    yq -i '.version = env(version)' output/schemas/{{name}}.linkml.yml
-    yq -i '.id = "https://modellen.netbeheernederland.nl/{{name}}/" + env(version)' output/schemas/{{name}}.linkml.yml
+    yq -i '.version = strenv(version)' output/schemas/{{name}}.linkml.yml
+    yq -i '.id = "https://modellen.netbeheernederland.nl/{{name}}/" + strenv(version)' output/schemas/{{name}}.linkml.yml
 
     # Write env version as metadata to schema.
     # Generation date.
